@@ -1,0 +1,55 @@
+/* Web pública de GestiPaw (portada, privacidad, soporte). Sin dependencias externas. */
+:root {
+  --fondo: #fff8f5; --superficie: #ffffff; --texto: #2a1a14; --tenue: #6b5148; --borde: #f0d9cf;
+  --marca: #a33900; --marca-suave: #ffdbcc; --sobre-marca: #ffffff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #1a110e; --superficie: #241915; --texto: #f6ded5; --tenue: #c9ada3; --borde: #3d2b24;
+    --marca: #ffb599; --marca-suave: #5a2a17; --sobre-marca: #3a1200;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--marca); }
+.cabecera { border-bottom: 1px solid var(--borde); background: var(--superficie); }
+.cabecera-in, main, .pie-in { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+.cabecera-in { display: flex; align-items: center; gap: 12px; height: 64px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--texto); font-weight: 800; font-size: 20px; }
+.marca img { width: 36px; height: 36px; }
+nav { margin-left: auto; display: flex; gap: 18px; font-size: 15px; }
+nav a { text-decoration: none; color: var(--tenue); font-weight: 600; }
+nav a[aria-current] { color: var(--marca); }
+main { padding-top: 36px; padding-bottom: 56px; }
+h1 { font-size: 34px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 21px; margin: 34px 0 8px; }
+h3 { font-size: 17px; margin: 22px 0 4px; }
+.sub { color: var(--tenue); margin: 0 0 24px; }
+.fecha { color: var(--tenue); font-size: 14px; }
+.caja { background: var(--superficie); border: 1px solid var(--borde); border-radius: 16px; padding: 18px 22px; margin: 18px 0; }
+.caja.destacada { background: var(--marca-suave); border-color: transparent; }
+.heroe { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; margin-bottom: 18px; }
+.heroe img { width: 160px; height: 160px; filter: drop-shadow(0 10px 28px rgba(201, 84, 40, .35)); }
+.boton { display: inline-block; padding: 12px 22px; border-radius: 999px; background: var(--marca); color: var(--sobre-marca); text-decoration: none; font-weight: 700; }
+.rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 18px; }
+.rejilla .caja { margin: 0; }
+.rejilla b { display: block; margin-bottom: 4px; }
+ul { padding-left: 22px; }
+li { margin: 4px 0; }
+.pie { border-top: 1px solid var(--borde); color: var(--tenue); font-size: 14px; }
+.pie-in { padding: 22px 20px; display: flex; gap: 16px; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .cabecera-in { height: auto; flex-wrap: wrap; padding: 12px 16px; row-gap: 6px; }
+  nav { margin-left: 0; width: 100%; }
+  main, .pie-in { padding-left: 16px; padding-right: 16px; }
+  code { overflow-wrap: anywhere; }
+  h1 { font-size: 27px; }
+  .heroe { grid-template-columns: 1fr; }
+  .heroe img { width: 112px; height: 112px; order: -1; }
+  nav { gap: 12px; font-size: 14px; }
+}

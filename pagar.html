@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprar GestiPaw Premium</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="estilo.css">
+<style>
+  #paddle-checkout-container { min-height: 450px; }
+  .estado { text-align: center; padding: 28px 10px; }
+  .estado .grande { font-size: 44px; }
+  ol.pasos li { margin: 6px 0; }
+</style>
+</head>
+<body>
+<header class="cabecera"><div class="cabecera-in">
+  <a class="marca" href="./"><img src="logo.png" alt="">GestiPaw</a>
+  <nav><a href="./">Inicio</a><a href="privacidad.html">Privacidad</a><a href="soporte.html">Soporte</a></nav>
+</div></header>
+<main>
+  <h1>GestiPaw Premium</h1>
+  <p class="sub">Pago único de por vida · sin suscripción · pago seguro procesado por Paddle</p>
+
+  <div id="cargando" class="caja estado">Cargando el pago seguro…</div>
+  <div id="paddle-checkout-container" class="paddle-checkout-container"></div>
+
+  <div id="exito" class="caja destacada" style="display:none">
+    <div class="estado"><div class="grande">🎉</div><h2 style="margin-top:6px">¡Gracias por tu compra!</h2></div>
+    <p>Para activar Premium:</p>
+    <ol class="pasos">
+      <li>Abre GestiPaw → <b>Configuración → Premium</b>.</li>
+      <li>Escribe el <b>correo con el que pagaste</b> y toca <b>Activar</b>.</li>
+      <li>Te llegará un <b>código de 6 dígitos</b> desde gestipaw@gmail.com: escríbelo en la app.</li>
+    </ol>
+    <p>Paddle también te enviará el recibo por correo.</p>
+  </div>
+
+  <div id="error" class="caja" style="display:none">
+    <b>No se pudo abrir el pago.</b> <span id="errorMsg"></span>
+    <p>Vuelve a intentarlo desde GestiPaw o escríbenos a <a href="mailto:gestipaw@gmail.com">gestipaw@gmail.com</a>.</p>
+  </div>
+
+  <p class="fecha" style="margin-top:22px">Al comprar aceptas los <a href="terminos.html">Términos</a> y la
+    <a href="reembolsos.html">Política de reembolsos</a> (14 días). El pago lo procesa Paddle.com, nuestro revendedor
+    autorizado y comerciante registrado (Merchant of Record).</p>
+</main>
+<footer class="pie"><div class="pie-in"><span>© 2026 GestiPaw</span><a href="terminos.html">Términos</a><a href="reembolsos.html">Reembolsos</a><a href="privacidad.html">Privacidad</a></div></footer>
+
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+// Pago de GestiPaw Premium con Paddle (misma cuenta que HAVORA; mismo token público).
+//  · ?_ptxn=txn_…  → abre la transacción que creó la app (servidor de licencias /create-checkout).
+//  · sin _ptxn     → compra directa desde la web (botón "Comprar" de la portada); ?email= lo precarga.
+(function () {
+  var TOKEN = 'live_4ca17cc193f25d10f7c52b7209c';
+  var PRECIO = 'pri_01m74dhn7b01zck8d7p5gq88h5';
+  var p = new URLSearchParams(location.search);
+  var txn = p.get('_ptxn'), email = p.get('email');
+  var cargando = document.getElementById('cargando');
+  function error(msg) {
+    cargando.style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('errorMsg').textContent = msg || '';
+  }
+  var intentos = 0;
+  function iniciar() {
+    if (typeof Paddle === 'undefined') {
+      if (++intentos > 80) return error('No cargó el sistema de pago. Revisa tu conexión.');
+      return setTimeout(iniciar, 100);
+    }
+    if (p.get('sandbox') === 'true') Paddle.Environment.set('sandbox');
+    Paddle.Initialize({
+      token: TOKEN,
+      eventCallback: function (e) {
+        if (e.name === 'checkout.loaded') cargando.style.display = 'none';
+        if (e.name === 'checkout.completed') {
+          document.getElementById('paddle-checkout-container').style.display = 'none';
+          document.getElementById('exito').style.display = 'block';
+        }
+        if (e.name === 'checkout.error') error('Código: ' + ((e.data && e.data.code) || 'desconocido'));
+      }
+    });
+    var opciones = {
+      settings: {
+        locale: 'es', displayMode: 'inline', frameTarget: 'paddle-checkout-container', frameInitialHeight: 450,
+        frameStyle: 'width:100%;min-width:312px;background:transparent;border:none;',
+        theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      }
+    };
+    if (txn) opciones.transactionId = txn;
+    else {
+      opciones.items = [{ priceId: PRECIO, quantity: 1 }];
+      if (email) opciones.customer = { email: email };
+    }
+    try { Paddle.Checkout.open(opciones); } catch (e) { error(e.message); }
+  }
+  iniciar();
+})();
+</script>
+</body>
+</html>
